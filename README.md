@@ -1,7 +1,7 @@
 # MobiTwin-EdgeBundling
 Repository hosting the scripts and edge-bundled flows between NUTS 2 regions.
 
-IMAGE HERE
+![Map of flows between continental NUTS 2 regions across Europe](od_edgebund_vis.png)
 
 ## Description of edge-bundled data
 
