@@ -1,11 +1,11 @@
 # MobiTwin-EdgeBundling
-Repository hosting the scripts and edge-bundled flows between NUTS 2 regions.
+Repository hosting the scripts and edge-bundled flows between NUTS 2 regions. The scripts in this repo are repurposed versions of the original scripts written by Peterka (2023), which uses the edge-path bundling approach developed by Wallinger et al., (2022).
 
 ![Map of flows between continental NUTS 2 regions across Europe](od_edgebund_vis.png)
 
 ## Description of edge-bundled data
 
-This repository contains a `geopackage` file of edge-bundled line geometries between all NUTS 2 regions in Europe. The starting and ending points of the lines are the centroids of the NUTS 2 regions using the 2021 version of the regions. The edge-bundled base network data was produced in three steps:
+This repository contains scripts for generating a `geopackage` file of edge-bundled line geometries between all NUTS 2 regions in Europe. The starting and ending points of the lines are the centroids of the NUTS 2 regions using the 2021 version of the regions. The edge-bundled base network data was produced in three steps:
 
 1. We generate the centroids for all NUTS 2 regions using the 2021 version of NUTS 2 regions.
 2. We generate line geometries from all centroids of NUTS2 regions to all other centroids of NUTS 2 regions.
