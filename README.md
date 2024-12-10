@@ -1,4 +1,4 @@
-# Edge Bundling Tool & edge-bundled NUTS 2 OD flows
+# Edge-bundled NUTS 2 OD flows & edge-bundling tool
 Repository hosting the scripts and edge-bundled flows between NUTS 2 regions. The scripts in this repo are repurposed versions of the original scripts written by Peterka (2023), which uses the edge-path bundling approach developed by Wallinger et al., (2022).
 
 ![Map of flows between continental NUTS 2 regions across Europe](od_edgebund_vis.png)
