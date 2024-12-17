@@ -2,11 +2,12 @@
 
 '''
 This script has the original model.py file from https://github.com/xpeterk1/edge-path-bundling/blob/main/Edge%20Path%20Bundling%20Python/model.py
+Although some comments have been added.
 '''
 
 import math
 
-
+# instantiate the Edge class and its attributes
 class Edge:
 
     def __init__(self, source, destination):
@@ -17,7 +18,7 @@ class Edge:
         self.skip = False
         self.lock = False
 
-
+# instantiate the Node class and its attributes
 class Node:
 
     def __init__(self, id, longitude, latitude, name):
