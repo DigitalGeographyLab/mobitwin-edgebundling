@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 
 '''
-This script has the slightly modified model.py file from https://github.com/xpeterk1/edge-path-bundling/blob/main/Edge%20Path%20Bundling%20Python/model.py
-Although some comments have been added.
+This script has the slightly modified model.py file from:
+https://github.com/xpeterk1/edge-path-bundling/blob/main/Edge%20Path%20Bundling%20Python/model.py
 '''
 
 import math
 
 # instantiate the Edge class and its attributes
+
+
 class Edge:
 
     def __init__(self, source, destination, od_id, count):
@@ -21,6 +23,8 @@ class Edge:
         self.lock = False
 
 # instantiate the Node class and its attributes
+
+
 class Node:
 
     def __init__(self, id, longitude, latitude, name):
@@ -37,7 +41,8 @@ class Node:
         self.previous_edge = None
 
     def distance_to(self, other) -> float:
-        return math.sqrt(pow(other.longitude - self.longitude, 2) + pow(other.latitude - self.latitude, 2))
+        return math.sqrt(pow(other.longitude - self.longitude, 2) +
+                         pow(other.latitude - self.latitude, 2))
 
     def __lt__(self, other):
         return self.id < other.id
