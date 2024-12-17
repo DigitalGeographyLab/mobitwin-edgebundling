@@ -2,7 +2,7 @@
 
 '''
 This script hosts functions used in edge bundling, most are original from https://github.com/xpeterk1/edge-path-bundling
-However, some we have changed to improve modularity and user convenience
+However, some we have changed to improve modularity and user convenience, also most functions are fully commented now.
 '''
 
 import numpy as np
@@ -16,32 +16,63 @@ from shapely.geometry import Point, LineString
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
-# function for
+# function for creating points for smoothing
 def split(points, smoothing):
+    
+    # set up points
     p = points
+    
     # for each level of smoothing, insert new control point in the middle of all points already in the array
     # loop starts from 1 => smoothing level of 1 keeps only node points
     for smooth in range(1, smoothing):
+        
+        # empty list for new points
         new_points = []
+        
+        # loop over the length of points
         for i in range(len(p) - 1):
+            
+            # create a new point
             new_point = np.divide(p[i] + p[i + 1], 2.0)
+            
+            # append original point
             new_points.append(p[i])
+            
+            # append new point
             new_points.append(new_point)
+        
+        # append last point
         new_points.append(p[-1])
+        
+        # set upt new points
         p = new_points
     return p
 
-# funtiong to retrieve flows
+# funtiong to retrieve control points for creating smooth curves
 def get(source, dest, nodes, path, smoothing):
+    
+    # set up a list for points
     control_points = []
+    
+    # get current node
     current_node = source
+    
+    # loop over edges in path
     for edge_in_path in path:
+        
+        # add coordinate points from current node to list
         control_points.append(np.array([current_node.longitude, current_node.latitude]))
-
+        
+        # get next node for edge or next node from next edge
         other_node_id = edge_in_path.destination if edge_in_path.source == current_node.id else edge_in_path.source
+        
+        # update current node
         current_node = nodes[other_node_id]
     
+    # add destination point to list
     control_points.append(np.array([dest.longitude, dest.latitude]))
+    
+    # return smoothened points
     return split(control_points, smoothing)
 
 # funtion to create a mapping between unique locations and unique integer IDs
@@ -109,7 +140,7 @@ def get_locations_data(edgeweight, centroid_csv, edge_df):
         dest.edges.append(edge)
     
     # print removed edges
-    print('Total number of edges removed: ' + str(calc_r))
+    print('[INFO] - Total number of edges removed: ' + str(calc_r))
 
     # iterator for removed nodes
     calc_n = 0
@@ -121,7 +152,7 @@ def get_locations_data(edgeweight, centroid_csv, edge_df):
         del nodes[key]
     
     # print removed node count
-    print('Nodes removed: '+str(calc_n))
+    print('[INFO] - Nodes removed: '+str(calc_n))
     
     # print nodes values
     print(nodes.values())
@@ -135,60 +166,87 @@ def get_locations_data(edgeweight, centroid_csv, edge_df):
     print(edges[0].source)
     print(edges[0].destination)
     print(edges[0].od_id)
-    print('Origin node name: ' + str(nodes[edges[0].source].name) + ' , origin node id: ' + str(nodes[edges[0].source].id) + '\nDestination node name: ' + str(nodes[edges[0].destination].name) + ', dest origin id: ' + str(nodes[edges[0].destination].id))
+    print('[INFO] - Origin node name: ' + str(nodes[edges[0].source].name) + ' , origin node id: ' + str(nodes[edges[0].source].id) + 
+          '\nDestination node name: ' + str(nodes[edges[0].destination].name) + ', dest origin id: ' + str(nodes[edges[0].destination].id))
     return nodes, edges
 
 # function to find shortest path
 def find_shortest_path(source: Node, dest: Node, nodes) -> List[Edge]:
+    
     # reset nodes
     for node in nodes.values():
         node.distance = 99999999999999
         node.visited = False
         node.previous = None
         node.previous_edge = None
-
+    
+    # set distance in source
     source.distance = 0
+    
+    # empty list for queue
     queue = []
+    
+    # heap push
     heapq.heappush(queue, (source.distance, source))
-
+    
+    # loop while queue exists
     while not len(queue) == 0:
+        
+        # get next node
         next_node = heapq.heappop(queue)[1]
         next_node.visited = True
-
+        
+        # loop over edges
         for edge in next_node.edges:
             if edge.skip:
                 continue
-
+            
+            # get id of node
             other_id = edge.destination if edge.source == next_node.id else edge.source
+            
+            # retrieve corresponding node
             other = nodes[other_id]
-
+            
+            # calculatae current distance
             current_distance = next_node.distance + edge.weight
-
+            
+            # compare distances
             if current_distance < other.distance:
                 other.distance = current_distance
                 other.previous = next_node
                 other.previous_edge = edge
                 heapq.heappush(queue, (other.distance, other))
                 
-        # Already found the destination, no need to continue with the search
+        # If already found the destination, no need to continue with the search
         if next_node == dest:
             break
         
-    # extract path
+    # empty list for path
     path = []
     
+    # set node as destination
     node = dest
+    
+    # while loop over previous nodes
     while node.previous is not None:
-        path.append(node.previous_edge)
-        node = node.previous
         
+        # append to list the node
+        path.append(node.previous_edge)
+        
+        # switch to previous node
+        node = node.previous
+    
+    # flip the path
     path.reverse()
+    
+    # return path
     return path
 
 
 # function to draw the bezier curves
 def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df, output):
-
+    
+    # check if draw_map is true
     if draw_map:
         
         # assign nodes
@@ -197,9 +255,8 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df, output)
         # Get geometry list from nodes
         geometry = [Point(xy) for xy in zip(nodes_list['X'], nodes_list['Y'])]
         
+        # create geodataframe
         geo_df = gpd.GeoDataFrame(nodes_list, crs='epsg:4326', geometry=geometry)
-        #testaan miltä näyttää koordinaatit orig/dest-sovitusta varten 1
-        print('\nNODE_LIST ALKU \n',geo_df.head())
         
     else:
         plt.gcf().set_dpi(300)
@@ -208,6 +265,7 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df, output)
         print('[INFO] - 3D not supported, check original repo by xpeterk1 for 3D functionality!')
         print('[INFO] - Exiting...')
         exit
+    # then do this
     else:
         # create and bezier curves
         bezier_polygons = []
@@ -309,9 +367,6 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df, output)
         # create geodataframe of straight lines
         straights = gpd.GeoDataFrame(straights, crs='epsg:4326', geometry='geometry')
         
-        #testaan miltä näyttää koordinaatit orig/dest-sovitusta varten 2
-        print('\nPRINTING straights head \n',straights.head(n=2))
-        
         # get results
         results = merged_lines_gdf.append(straights, ignore_index=True)
         
@@ -326,9 +381,11 @@ def eval_bezier(control_points, t):
     # return list
     '''
     
+    # check if there are too few control points
     if len(control_points) < 2:
         return np.zeros(2)
     
+    # check if t matches conditions
     if t < 0 or t > 1:
         return np.zeros(2)
     if t == 0:
@@ -338,11 +395,23 @@ def eval_bezier(control_points, t):
     
     # Calculate the intermediate points
     points = control_points
+    
+    # loop over points as long as there are more than one
     while len(points) > 1:
+        
+        # empty list for intermediate points
         intermediate_points = []
+        
+        # loop over the points
         for i in range(len(points)-1):
+            
+            # create the intermediate point
             p = (1 - t) * points[i] + t * points[i+1]
+            
+            # append it to the list
             intermediate_points.append(p)
+        
+        # set up intermediate points
         points = intermediate_points
     return points[0]
 
@@ -355,11 +424,20 @@ def create_bezier_polygon(control_points, n):
     # arguments: list of 2d-np.arrays , int
     # returns: list of 2d np.arrays (points) on the bezier curve
     '''
-    
+    # check if number of points requested is too low
     if n < 2:
         return [control_points[0], control_points[-1]]
+    
+    # empty list for curved points
     points = []
+    
+    # loop over range of requested number of intermediate points
     for i in range(n):
+        
+        # append created intermediate points
         points.append(eval_bezier(control_points, i/n))
+    
+    # append the created point
     points.append(control_points[-1])
+    
     return points
