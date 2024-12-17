@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 '''
-This script has the original model.py file from https://github.com/xpeterk1/edge-path-bundling/blob/main/Edge%20Path%20Bundling%20Python/model.py
+This script has the slightly modified model.py file from https://github.com/xpeterk1/edge-path-bundling/blob/main/Edge%20Path%20Bundling%20Python/model.py
 Although some comments have been added.
 '''
 
@@ -10,9 +10,11 @@ import math
 # instantiate the Edge class and its attributes
 class Edge:
 
-    def __init__(self, source, destination):
+    def __init__(self, source, destination, od_id, count):
         self.source = source
         self.destination = destination
+        self.od_id = od_id
+        self.count = count
         self.distance = -1
         self.weight = -1
         self.skip = False

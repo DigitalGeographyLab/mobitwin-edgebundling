@@ -100,7 +100,7 @@ def get_locations_data(edgeweight, centroid_csv, edge_df):
     edges = []
     
     #nodes_list['id'] = nodes_list.reset_index().index + 1 
-    node_ids = create_ids(nodes_list)
+    node_ids = create_ids(nodes_list, 'NUTS_ID')
 
     # Load nodes into dict. Maps ID -> Node instance
     for index, row in nodes_list.iterrows():
