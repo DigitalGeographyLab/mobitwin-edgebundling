@@ -287,7 +287,10 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df, output)
         for cp in cp_list:
             
             # add values to df
-            cp_df = cp_df.append({'orig': cp[0], 'dest': cp[1]}, ignore_index=True)
+            cp_df.at[0, 'orig'] = cp[0]
+            cp_df.at[0, 'dest'] = cp[1]
+            
+            #cp_df.append({'orig': cp[0], 'dest': cp[1]}, ignore_index=True)
         
         # adding an index column to the OD dataframe
         cp_df['id'] = cp_df.index
@@ -347,12 +350,17 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df, output)
             # create dataframe
             straight_df = pd.DataFrame(columns=['orig_nuts', 'dest_nuts', 'OD_ID', 'COUNT', 'geometry'])
             
-            # add row
-            straight_df = straight_df.append({'orig_nuts': o_name,
-                                              'dest_nuts': d_name,
-                                              'OD_ID': o_name + '_' + d_name,
-                                              'COUNT': count,
-                                              'geometry': line}, ignore_index=True)
+            # add rows
+            straight_df['orig_nuts'] = o_name
+            straight_df['dest_nuts'] = d_name
+            straight_df['OD_ID'] = o_name + '_' + d_name
+            straight_df['COUNT'] = count
+            straight_df['geometry'] = line
+            #straight_df = straight_df.append({'orig_nuts': o_name,
+            #                                  'dest_nuts': d_name,
+            #                                  'OD_ID': o_name + '_' + d_name,
+            #                                  'COUNT': count,
+            #                                  'geometry': line}, ignore_index=True)
                     
             # add to list
             straight_edges.append(straight_df)
@@ -368,7 +376,7 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df, output)
         straights = gpd.GeoDataFrame(straights, crs='epsg:4326', geometry='geometry')
         
         # get results
-        results = merged_lines_gdf.append(straights, ignore_index=True)
+        results = pd.concat([merged_lines_gdf, straights]).reset_index(drop=True)
         
         # save
         results.to_file(output, driver='GPKG')
