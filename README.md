@@ -1,5 +1,11 @@
 # Edge-bundling tool for regional flows
-This repository hosts the scripts to perform edge-path bundling (Wallinger et al. 2022) for flow data. It's primary use case is to model flows across NUTS regions in Europe. It's inputs are two CSV files, one for point feature data and associated coordinates, and another for flows (edges) to be bundled. It outputs a GeoPackage file. The script expects the data to be in WGS84 coordinate reference system. The scripts in this repo are repurposed versions of the original scripts written by Peterka (2023).
+This repository hosts the scripts to perform edge-path bundling (Wallinger et al. 2022) for flow data. It's primary use case is to support visualization of complex mobility data, and has been used to bundle human mobility flows across NUTS regions in Europe.
+
+The tool's inputs are two CSV files, one for point feature data and associated coordinates, and another for flows (edges) to be bundled. After bundling, the tool outputs a GeoPackage file. The script expects the data to be in WGS84 coordinate reference system.
+
+The scripts in this repo are repurposed versions of the original scripts written by Peterka (2023).
+
+See image below for an illustration of bundled flows across NUTS 2 regions in Europe.
 
 ![Map of flows between continental NUTS 2 regions across Europe](od_edgebund_vis.png)
 
