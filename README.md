@@ -14,7 +14,7 @@ The scripts within the repo require Python 3.10 or newer version with the follow
 
 On top of these Python requirements, the script expects the input CSV data (centroids and edges) to have a certain structure.
 
-### Data structure for input files
+## Data structure for input files
 
 #### Centroid file
 
