@@ -25,7 +25,7 @@ On top of these Python requirements, the script expects the input CSV data (cent
 #### Edge file
 
 | ORIGIN | DESTINATION | OD_ID | COUNT |
-| ---- | :----- | :---------- |
+| ---- | :----- | :---------- | :---------- |
 | NUTS ID code of origin | NUTS ID code of destination | ID made of origin and destination codes joined by an underscore (_) | Integer/floating point number of flow strength |
 
 ## Usage
