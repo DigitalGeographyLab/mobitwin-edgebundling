@@ -7,10 +7,10 @@ This repository hosts the scripts to perform edge-path bundling (Wallinger et al
 
 The scripts within the repo require Python 3.10 or newer version with the following packages:
 
-1. ´pandas´
-2. ´geopandas´
-3. ´tqdm´
-4. ´shapely´
+1. `pandas`
+2. `geopandas`
+3. `tqdm`
+4. `shapely`
 
 On top of these Python requirements, the script expects the input CSV data (centroids and edges) to have a certain structure.
 
