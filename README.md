@@ -11,6 +11,8 @@ See image below for an illustration of bundled flows across NUTS 2 regions in Eu
 <img src="od_edgebund_vis.png" alt="Map of flows between continental NUTS 2 regions across Europe" width="550" style="display: block; margin: 0 auto"/>
 </p>
 
+This tool is an additional output of the Mobi-Twin research project.
+
 ## Requirements
 
 The scripts within the repo require Python 3.10 or newer version with the following packages:
