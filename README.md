@@ -3,7 +3,7 @@ This repository hosts the scripts to perform edge-path bundling (Wallinger et al
 
 The tool's inputs are two CSV files, one for point feature data and associated coordinates, and another for flows (edges) to be bundled. After bundling, the tool outputs a GeoPackage file. The script expects the data to be in WGS84 coordinate reference system.
 
-The scripts in this repo are repurposed versions of the original scripts written by Peterka (2023).
+The scripts in this repo are repurposed versions of the original scripts written by Peterka (2023). The updates to the original code aim to make the code more usable for analytical purposes.
 
 See image below for an illustration of bundled flows across NUTS 2 regions in Europe.
 
