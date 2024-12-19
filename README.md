@@ -5,10 +5,10 @@ The tool's inputs are two CSV files, one for point feature data and associated c
 
 The scripts in this repo are repurposed versions of the original scripts written by Peterka (2023). The updates to the original code aim to make the code more usable for analytical purposes.
 
-See image below for an illustration of bundled flows across NUTS 2 regions in Europe.
+See image below for an illustration of bundled flows across NUTS 3 regions in Northern Europe.
 
 <p align="center">
-<img src="od_edgebund_vis.png" alt="Map of flows between continental NUTS 2 regions across Europe" width="550" style="display: block; margin: 0 auto"/>
+<img src="eb_example_map.png" alt="Map of flows between NUTS 3 regions across Northern Europe" width="550" style="display: block; margin: 0 auto"/>
 </p>
 
 This tool is an additional output of the Mobi-Twin research project.
