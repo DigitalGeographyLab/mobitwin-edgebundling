@@ -47,7 +47,7 @@ Wallinger, M., Archambault, D., Auber, D., Nöllenburg, M., & Peltonen, J. (2022
 
 Peterka, O. (2024). Xpeterk1/edge-path-bundling. https://github.com/xpeterk1/edge-path-bundling (Original work published 2023).
 
-## Citation
+## Citing this work
 
 ```
 @asoftware{Vaisanen2024,
@@ -60,3 +60,7 @@ Peterka, O. (2024). Xpeterk1/edge-path-bundling. https://github.com/xpeterk1/edg
   howpublished = {Zenodo}
 }
 ```
+## Related links
+
+* [Mobi-Twin project official webpage](https://mobi-twin-project.eu/)
+* [Digital Geography Lab webpage](https://www.helsinki.fi/en/researchgroups/digital-geography-lab)
