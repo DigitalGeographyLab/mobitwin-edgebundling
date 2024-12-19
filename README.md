@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/880186676.svg)](https://doi.org/10.5281/zenodo.14532547)
 # Edge-bundling tool for regional mobility flow data
 This repository hosts the scripts to perform edge-path bundling (Wallinger et al. 2022) for flow data. It's primary use case is to support visualization of complex mobility data, and has been used to bundle human mobility flows across NUTS regions in Europe.
 
