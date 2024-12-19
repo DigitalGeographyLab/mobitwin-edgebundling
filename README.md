@@ -30,7 +30,7 @@ On top of these Python requirements, the script expects the input CSV data (cent
 
 | ID_COLUMN | X | Y |
 | ---- | :----- | :---------- |
-| Unique identifier for centroid (e.g., NUTS code) | X coordinate in WGS84 of the centroid | Y coordinate of the centroid |
+| Unique identifier for centroid (e.g., NUTS code) | X coordinate (WGS84) of the centroid | Y coordinate (WGS84) of the centroid |
 
 N.B.: The `ID_COLUMN` in the above is an example name, use the column name you have in your data.
 
@@ -51,6 +51,8 @@ python bundle_edges.py -c /path/to/centroids.csv -id ID_COLUMN -ew /path/to/edge
 ```
 
 If you want to adjust some parameters of the bundling, such as weights or bundling threshold use the flags `-ew` for edge weights (default is 2), and `-t` for bundling threshold (default is 2). The edge weights dictate how powerful the "gravity" of long edges are. The bundling threshold sets the distance limit for how many times longer the bundled edges can be compared to straight line distances, flows that are longer than the threshold are not bundled but remain as straight line geometries in the output.
+
+Please note, the script expects the coordinates to be in WGS84 [(EPSG:4326)](https://epsg.io/4326)
 
 ## References
 Wallinger, M., Archambault, D., Auber, D., Nöllenburg, M., & Peltonen, J. (2022). Edge-Path Bundling: A Less Ambiguous Edge Bundling Approach. IEEE Transactions on Visualization and Computer Graphics, 28(1), 313–323. https://doi.org/10.1109/TVCG.2021.3114795
