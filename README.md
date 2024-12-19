@@ -72,7 +72,7 @@ Peterka, O. (2024). Xpeterk1/edge-path-bundling. https://github.com/xpeterk1/edg
   author = {Väisänen, Tuomas and Inkeröinen, Oula and Malekzadeh, Milad and Järv, Olle},
   year = {2024},
   address = {Helsinki, Finland},
-  doi = {},
+  doi = {10.5281/zenodo.14532547},
   url = {https://github.com/DigitalGeographyLab/mobitwin-edgebundling/},
   urldate = {2024-29-10},
   howpublished = {Zenodo}
