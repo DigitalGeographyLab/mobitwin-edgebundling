@@ -54,6 +54,10 @@ If you want to adjust some parameters of the bundling, such as weights or bundli
 
 Please note, the script expects the coordinates to be in WGS84 [(EPSG:4326)](https://epsg.io/4326)
 
+### Test files
+
+We have provided two test CSV files that demonstrate the data structure of the required CSV files. These files can be found under the `example_data` directory.
+
 ## References
 Wallinger, M., Archambault, D., Auber, D., Nöllenburg, M., & Peltonen, J. (2022). Edge-Path Bundling: A Less Ambiguous Edge Bundling Approach. IEEE Transactions on Visualization and Computer Graphics, 28(1), 313–323. https://doi.org/10.1109/TVCG.2021.3114795
 
