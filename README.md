@@ -38,10 +38,10 @@ On top of these Python requirements, the script expects the input CSV data (cent
 
 ## Usage
 
-Run the tool by typing in the following command:
+Clone this repository, and run the tool by typing in the following command:
 
 ```
-python bundle_edges.py -c /path/to/centroids.csv -ew /path/to/edges.csv -o /path/to/output.gpkg
+python bundle_edges.py -c /path/to/centroids.csv -id ID_COLUMN -ew /path/to/edges.csv -o /path/to/output.gpkg
 ```
 
 If you want to adjust some parameters of the bundling, such as weights or bundling threshold use the flags `-ew` for edge weights (default is 2), and `-t` for bundling threshold (default is 2). The edge weights dictate how powerful the "gravity" of long edges are. The bundling threshold sets the distance limit for how many times longer the bundled edges can be compared to straight line distances, flows that are longer than the threshold are not bundled but remain as straight line geometries in the output.
