@@ -169,9 +169,6 @@ def get_locations_data(edgeweight, centroid_csv, edge_df, id_col):
     # print removed node count
     print('[INFO] - Nodes removed: '+str(calc_n))
 
-    # print nodes values
-    print(nodes.values())
-
     # Sort edges inside nodes in ascending order
     for node in nodes.values():
         node.edges.sort(key=lambda x: x.distance)

@@ -128,7 +128,6 @@ for edge in tqdm(edges, desc="Computing: "):
     # Get control points for drawing
     control_point_lists.append(functions.get(
         source, dest, nodes, path, smoothing))
-print('Control point lists', control_point_lists[:1])
 
 ###############################################################################
 # DRAWING
