@@ -8,7 +8,7 @@ The scripts in this repo are repurposed versions of the original scripts written
 See image below for an illustration of bundled flows across NUTS 3 regions in Northern Europe.
 
 <p align="center">
-<img src="eb_example_map.png" alt="Map of flows between NUTS 3 regions across Northern Europe" width="550" style="display: block; margin: 0 auto"/>
+<img src="eb_example_map_gh.png" alt="Map of flows between NUTS 3 regions across Northern Europe" width="550" style="display: block; margin: 0 auto"/>
 </p>
 
 This tool is an additional output of the Mobi-Twin research project.
