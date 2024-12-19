@@ -7,7 +7,7 @@ The scripts in this repo are repurposed versions of the original scripts written
 
 See image below for an illustration of bundled flows across NUTS 2 regions in Europe.
 
-<img src="od_edgebund_vis.png" alt="Map of flows between continental NUTS 2 regions across Europe" width="800"/>
+<img src="od_edgebund_vis.png" alt="Map of flows between continental NUTS 2 regions across Europe" width="550"/>
 
 ## Requirements
 
