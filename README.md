@@ -38,6 +38,8 @@ N.B.: The `ID_COLUMN` in the above is an example name, use the column name you h
 | ---- | :----- | :---------- | :---------- |
 | ID code of origin | ID code of destination | ID made of origin and destination codes joined by an underscore (_) | Integer/floating point number of flow strength |
 
+N.B.: The ID codes of origins and destinations have to match the IDs of your centroid file.
+
 ## Usage
 
 Clone this repository, and run the tool by typing in the following command:
