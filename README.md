@@ -26,15 +26,17 @@ On top of these Python requirements, the script expects the input CSV data (cent
 
 #### Centroid file
 
-| NUTS_ID | X | Y |
+| ID_COLUMN | X | Y |
 | ---- | :----- | :---------- |
-| NUTS ID code of region | X coordinate in WGS84 of the centroid | Y coordinate of the centroid |
+| Unique identifier for centroid (e.g., NUTS code) | X coordinate in WGS84 of the centroid | Y coordinate of the centroid |
+
+N.B.: The `ID_COLUMN` in the above is an example name, use the column name you have in your data.
 
 #### Edge file
 
 | ORIGIN | DESTINATION | OD_ID | COUNT |
 | ---- | :----- | :---------- | :---------- |
-| NUTS ID code of origin | NUTS ID code of destination | ID made of origin and destination codes joined by an underscore (_) | Integer/floating point number of flow strength |
+| ID code of origin | ID code of destination | ID made of origin and destination codes joined by an underscore (_) | Integer/floating point number of flow strength |
 
 ## Usage
 
