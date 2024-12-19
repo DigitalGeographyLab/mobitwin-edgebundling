@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 
 '''
-This script bundles flows between NUTS centroids (or any other polygon data).
+This script bundles flows between centroids of regional polygons (e.g., NUTS).
 
 Requirements:
 
-Centroid CSV file where each centroid has a unique ID named 'NUTS_ID', and
+Centroid CSV file where each centroid has a unique ID named column, and
 its coordinates in WGS 84 CRS in columns 'X' and 'Y'.
 
-Edge CSV file with 'ORIGIN' and 'DESTINATION' columns that correspond to IDs
-in centroid csv 'NUTS_ID', 'OD_ID' column that contains the origin and
-destination IDs joined by an underscore (_), and a 'COUNT' column describing
-the intensity of the flow as integers.
+Edge CSV file with 'ORIGIN' and 'DESTINATION' columns that correspond to unique 
+IDs in centroid csv, 'OD_ID' column that contains the origin and destination
+IDs joined by an underscore (_), and a 'COUNT' column describing the intensity
+of the flow as integers.
 
 Run the script:
-    python bundle_edges.py -c /path/to/centroids.csv -e /path/to/edges.csv -o /path/to/result.gpkg
+    python bundle_edges.py -c /path/to/centroids.csv -id NUTS_ID -e /path/to/edges.csv -o /path/to/result.gpkg
 '''
 
 from tqdm import tqdm
@@ -38,6 +38,10 @@ ap = argparse.ArgumentParser()
 # set up arguments
 ap.add_argument("-c", "--centroid", required=True,
                 help="Path to input CSV with centroid IDs and coordinates.")
+
+ap.add_argument("-id", "--identifier", required=True,
+                help="The column in centroid CSV that contains unique ID for "
+                "the centroid.")
 
 ap.add_argument("-e", "--edges", required=True,
                 help="Path to input CSV with edges between centroids.")
@@ -69,6 +73,9 @@ ew = args['edgeweight']
 # threshold for how long a detour is allowed to be
 k = args['threshold']
 
+# assign identifier col and set it as string
+id_col = str(args['identifier'])
+
 # number of sampling points in Bezier curves
 n = 100
 
@@ -82,7 +89,7 @@ plot_3d = False
 smoothing = 2
 
 # get nodes and edges from centroids and edges
-nodes, edges = functions.get_locations_data(ew, centroid_df, edge_df)
+nodes, edges = functions.get_locations_data(ew, centroid_df, edge_df, id_col)
 
 ###############################################################################
 # MAIN CYCLE
@@ -127,7 +134,7 @@ print('Control point lists', control_point_lists[:1])
 # DRAWING
 ###############################################################################
 functions.draw(control_point_lists, nodes, edges, n, plot_3d,
-               draw_map, centroid_df, output=args['output'])
+               draw_map, centroid_df, output=args['output'], id_col=id_col)
 
 print(f"[INFO] - Out of {len(edges)} edges, {
       too_long} had too long detour and {no_path} had no alternative path.")

@@ -100,7 +100,7 @@ def create_ids(dataframe, id_col):
 # load locations and prepare them for edge bundling
 
 
-def get_locations_data(edgeweight, centroid_csv, edge_df):
+def get_locations_data(edgeweight, centroid_csv, edge_df, id_col):
     """
     Read in centroids and edges between centroids, and process them so they're
     ready for edge-path bundling.
@@ -114,12 +114,12 @@ def get_locations_data(edgeweight, centroid_csv, edge_df):
     edges = []
 
     # nodes_list['id'] = nodes_list.reset_index().index + 1
-    node_ids = create_ids(nodes_list, 'NUTS_ID')
+    node_ids = create_ids(nodes_list, id_col)
 
     # Load nodes into dict. Maps ID -> Node instance
     for index, row in nodes_list.iterrows():
-        idx = node_ids[row['NUTS_ID']]
-        name = row['NUTS_ID']
+        idx = node_ids[row[id_col]]
+        name = row[id_col]
         lat = row['Y']
         long = row['X']
         nodes[idx] = Node(idx, long, lat, name)
@@ -264,7 +264,7 @@ def find_shortest_path(source: Node, dest: Node, nodes) -> List[Edge]:
 
 # function to draw the bezier curves
 def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
-         output):
+         output, id_col):
 
     # check if draw_map is true
     if draw_map:
@@ -318,16 +318,16 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
         # adding an index column to the OD dataframe
         cp_df['id'] = cp_df.index
 
-        # adding orig_nuts and dest_nuts ID's for control_points for later
+        # adding origin and destination ID's for control_points for later
         for index, poly in cp_df.iterrows():
             for _, centroid in geo_df.iterrows():
                 if (poly['orig'][0] == centroid['X']) and (poly['orig'][1] == centroid['Y']):
-                    cp_df.at[index, 'orig_nuts'] = centroid['NUTS_ID']
+                    cp_df.at[index, 'orig_id'] = centroid[id_col]
 
         for index, poly in cp_df.iterrows():
             for _, centroid in geo_df.iterrows():
                 if (poly['dest'][0] == centroid['X']) and (poly['dest'][1] == centroid['Y']):
-                    cp_df.at[index, 'dest_nuts'] = centroid['NUTS_ID']
+                    cp_df.at[index, 'dest_id'] = centroid[id_col]
 
         # create list of bezier linestrings
         lines = []
@@ -343,13 +343,13 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
         # adding an index column to the lines dataframe
         lines_gdf['id'] = lines_gdf.index
 
-        # merging orig_nuts and dest_nuts to lines_gdf
+        # merging orig_id and id to lines_gdf
         merged_lines_gdf = lines_gdf.merge(
-            cp_df[['id', 'orig_nuts', 'dest_nuts']], on='id', how='left')
+            cp_df[['id', 'orig_id', 'dest_id']], on='id', how='left')
 
         # generate od ids
-        merged_lines_gdf['OD_ID'] = merged_lines_gdf['orig_nuts'] + \
-            '_' + merged_lines_gdf['dest_nuts']
+        merged_lines_gdf['OD_ID'] = merged_lines_gdf['orig_id'] + \
+            '_' + merged_lines_gdf['dest_id']
 
         # empty list for dataframes
         straight_edges = []
@@ -376,11 +376,11 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
 
             # create dataframe
             straight_df = pd.DataFrame(
-                columns=['orig_nuts', 'dest_nuts', 'OD_ID', 'COUNT', 'geometry'])
+                columns=['orig_id', 'dest_id', 'OD_ID', 'COUNT', 'geometry'])
 
             # add rows
-            straight_df['orig_nuts'] = o_name
-            straight_df['dest_nuts'] = d_name
+            straight_df['orig_id'] = o_name
+            straight_df['dest_id'] = d_name
             straight_df['OD_ID'] = o_name + '_' + d_name
             straight_df['COUNT'] = count
             straight_df['geometry'] = line
@@ -391,10 +391,10 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
         # concatenate list to dataframe
         straights = pd.concat(straight_edges)
 
-        # add orig and dest nuts
-        straights['orig_nuts'] = straights['OD_ID'].apply(
+        # add orig and dest ids
+        straights['orig_id'] = straights['OD_ID'].apply(
             lambda x: x.split('_')[0])
-        straights['dest_nuts'] = straights['OD_ID'].apply(
+        straights['dest_id'] = straights['OD_ID'].apply(
             lambda x: x.split('_')[1])
 
         # create geodataframe of straight lines
