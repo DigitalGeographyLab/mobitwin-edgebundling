@@ -1,4 +1,4 @@
-# Edge-bundling tool for regional flows
+# Edge-bundling tool for regional mobility flow data
 This repository hosts the scripts to perform edge-path bundling (Wallinger et al. 2022) for flow data. It's primary use case is to support visualization of complex mobility data, and has been used to bundle human mobility flows across NUTS regions in Europe.
 
 The tool's inputs are two CSV files, one for point feature data and associated coordinates, and another for flows (edges) to be bundled. After bundling, the tool outputs a GeoPackage file. The script expects the data to be in WGS84 coordinate reference system.
@@ -63,7 +63,7 @@ Peterka, O. (2024). Xpeterk1/edge-path-bundling. https://github.com/xpeterk1/edg
 
 ```
 @asoftware{Vaisanen2024,
-  title = {Edge bundling tool for regional flows},
+  title = {Edge bundling tool for regional mobility flow data},
   author = {Väisänen, Tuomas and Inkeröinen, Oula and Malekzadeh, Milad and Järv, Olle},
   year = {2024},
   address = {Helsinki, Finland},
