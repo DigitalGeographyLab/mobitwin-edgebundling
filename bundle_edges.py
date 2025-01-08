@@ -135,6 +135,5 @@ for edge in tqdm(edges, desc="Computing: "):
 functions.draw(control_point_lists, nodes, edges, n, plot_3d,
                draw_map, centroid_df, output=args['output'], id_col=id_col)
 
-print(f"[INFO] - Out of {len(edges)} edges, {
-      too_long} had too long detour and {no_path} had no alternative path.")
+print(f"[INFO] - Out of {len(edges)} edges, {too_long} had too long detour and {no_path} had no alternative path.")
 print("[INFO] - ... done!")
