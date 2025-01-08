@@ -175,13 +175,6 @@ def get_locations_data(edgeweight, centroid_csv, edge_df, id_col):
 
     # Sort edges
     edges.sort(key=lambda x: x.weight, reverse=True)
-    print(edges[0].source)
-    print(edges[0].destination)
-    print(edges[0].od_id)
-    print('[INFO] - Origin node name: ' + str(nodes[edges[0].source].name) +
-          ' , origin node id: ' + str(nodes[edges[0].source].id) +
-          '\nDestination node name: ' + str(nodes[edges[0].destination].name) +
-          ', dest origin id: ' + str(nodes[edges[0].destination].id))
     return nodes, edges
 
 # function to find shortest path
