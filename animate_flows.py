@@ -3,6 +3,13 @@
 """
 Created on Fri Mar 28 15:27:50 2025
 
+This script expects you to use the output from bundle_edges.py file.
+If you use something else, please modify accordingly.
+
+### Run the script by typing:
+
+python animate_flows.py -ig /path/to/file.gpkg -ic /path/to/count.csv -o /path/to/output.gif
+
 @author: waeiski
 """
 
@@ -13,11 +20,30 @@ from matplotlib.animation import FuncAnimation
 import contextily as ctx
 import numpy as np
 from matplotlib.colors import Normalize
+import argparse
+
+# set up argument parser
+ap = argparse.ArgumentParser()
+
+# Get path to input geopackage
+ap.add_argument("-ig", "--input-geo", required=True,
+                help="Path to input GeoPackage")
+
+# Get path to input count data
+ap.add_argument("-ic", "--input-count", required=True,
+                help="Path to input CSV with flow counts")
+
+# Get path to output file
+ap.add_argument("-o", "--output", required=True,
+                help="Path to output .gif file")
+
+# parse arguments
+args = vars(ap.parse_args())
 
 # configure file paths
-GPKG_PATH = "/path/to/geopackage_file.gpkg"        # Path to your GPKG file
-CSV_PATH = "/path/to/flow_count_file.csv"          # Path to your CSV file
-OUTPUT_GIF_PATH = "/path/to/output_animation.gif"  # Output GIF filename
+GPKG_PATH = args['input-geo']     # Path to your GPKG file
+CSV_PATH = args['input-count']    # Path to your CSV file
+OUTPUT_GIF_PATH = args['output']  # Output GIF filename
 
 # column names (adjust if different in your files) ---
 GPKG_ORIGIN_ID_COL = 'orig_id'
