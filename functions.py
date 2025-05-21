@@ -274,75 +274,86 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
 
     if use_3d:  # not supported
         print(
-            '[INFO] - 3D not supported, check original repo by xpeterk1 for '
+            '[INFO] - 3D not supported, check out the original repo by xpeterk1 for '
             '3D functionality!')
         print('[INFO] - Exiting...')
         exit
+    
     # then do this
     else:
-        # create and bezier curves
+        
+        # create list for bezier curves
         bezier_polygons = []
-        for controlPoints in tqdm(control_points, desc="Drawing curves: "):
+        
+        # keep track of the original edge for each bezier curve
+        edge_bezier_map = {}
+        
+        # loop over control points and start the curve drawing
+        for i, controlPoints in enumerate(tqdm(control_points, desc="Drawing curves: ")):
             polygon = create_bezier_polygon(
                 controlPoints, n)  # returns list of 2d vectors
             bezier_polygons.append(polygon)
+            
+            # find end and start points for current edge
+            start_point = tuple(controlPoints[0])
+            end_point = tuple(controlPoints[-1])
+            
+            # loop over edges
+            for edge in edges:
+                
+                # get origin and destinations IDs
+                source = nodes[edge.source]
+                dest = nodes[edge.destination]
+                
+                # get origin and destination coordinates
+                source_point = (source.longitude, source.latitude)
+                dest_point = (dest.longitude, dest.latitude)
+                
+                # check if this edge matches the control point
+                if (start_point == source_point and end_point == dest_point) or \
+                   (start_point == dest_point and end_point == source_point):
+                    edge_bezier_map[i] = edge
+                    break
+        
+        # create a list for the bezier lines with their metadata
+        bezier_lines = []
 
-        # create a list for the first and last points of each bezier line
-        cp_list = []
+        # loop over bezier polygons
+        for i, poly in enumerate(bezier_polygons):
+            
+            # get line string
+            linestring = LineString(poly)
+            
+            # try finding a matching edge
+            if i in edge_bezier_map:
+                
+                edge = edge_bezier_map[i]
+                source_node = nodes[edge.source]
+                dest_node = nodes[edge.destination]
+                
+                # append to bezier lines list if found
+                bezier_lines.append({
+                    'geometry': linestring,
+                    'orig_id': source_node.name,
+                    'dest_id': dest_node.name,
+                    'OD_ID': f"{source_node.name}_{dest_node.name}",
+                    'COUNT': edge.count
+                })
+            # else input Nones
+            else:
+                bezier_lines.append({
+                    'geometry': linestring,
+                    'orig_id': None,
+                    'dest_id': None,
+                    'OD_ID': None,
+                    'COUNT': None
+                })
 
-        # append points to list
-        for poly in bezier_polygons:
-            cp_list.append(np.array([poly[0], poly[-1]]))
-
-        # create a dataframe from control points to create origin and
-        # destination coordinate points
-        cp_df = pd.DataFrame(columns=['orig', 'dest'])
-
-        # loop over control points list
-        for cp in cp_list:
-
-            # add values to df
-            cp_df.at[0, 'orig'] = cp[0]
-            cp_df.at[0, 'dest'] = cp[1]
-
-        # adding an index column to the OD dataframe
-        cp_df['id'] = cp_df.index
-
-        # adding origin and destination ID's for control_points for later
-        for index, poly in cp_df.iterrows():
-            for _, centroid in geo_df.iterrows():
-                if (poly['orig'][0] == centroid['X']) and (poly['orig'][1] == centroid['Y']):
-                    cp_df.at[index, 'orig_id'] = centroid[id_col]
-
-        for index, poly in cp_df.iterrows():
-            for _, centroid in geo_df.iterrows():
-                if (poly['dest'][0] == centroid['X']) and (poly['dest'][1] == centroid['Y']):
-                    cp_df.at[index, 'dest_id'] = centroid[id_col]
-
-        # create list of bezier linestrings
-        lines = []
-        for poly in bezier_polygons:
-            a = LineString(poly)
-            lines.append(a)
-
-        # create dataframe and geodataframe for bezier lines
-        lines_df = pd.DataFrame(lines, columns=['geometry'])
-        lines_gdf = gpd.GeoDataFrame(
-            lines_df, crs='epsg:4326', geometry='geometry')
-
-        # adding an index column to the lines dataframe
-        lines_gdf['id'] = lines_gdf.index
-
-        # merging orig_id and id to lines_gdf
-        merged_lines_gdf = lines_gdf.merge(
-            cp_df[['id', 'orig_id', 'dest_id']], on='id', how='left')
-
-        # generate od ids
-        merged_lines_gdf['OD_ID'] = merged_lines_gdf['orig_id'] + \
-            '_' + merged_lines_gdf['dest_id']
-
-        # empty list for dataframes
-        straight_edges = []
+        # create a geodataframe for the bezier lines
+        bezier_gdf = gpd.GeoDataFrame(bezier_lines, crs='epsg:4326')
+        
+        # create empty list for straight line geomteries of unbundled edges
+        straight_lines = []
 
         # draw lines without detour or with detour that was too long
         for edge in tqdm(edges, desc="Drawing lines: "):
@@ -358,47 +369,29 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
             d_name = d.name
 
             # get count of flow for edge connecting the nodes
-            count = edge.count
+            e_count = edge.count
 
             # generate geometry for the edge
-            line = LineString(
-                [Point([o.longitude, o.latitude]), Point([d.longitude, d.latitude])])
+            line = LineString([Point([o.longitude, o.latitude]),
+                               Point([d.longitude, d.latitude])])
 
-            # create dataframe
-            straight_df = pd.DataFrame(
-                columns=['orig_id', 'dest_id', 'OD_ID', 'COUNT', 'geometry'])
+            # create straight line geometry row
+            straight_lines.append({
+                'geometry': line,
+                'orig_id': o_name,
+                'dest_id': d_name,
+                'OD_ID': f"{o_name}_{d_name}",
+                'COUNT': e_count
+            })
+            
+        # create geodataframe for straight line geometries
+        straight_gdf = gpd.GeoDataFrame(straight_lines, crs='epsg:4326')      
 
-            # add rows
-            straight_df['orig_id'] = o_name
-            straight_df['dest_id'] = d_name
-            straight_df['OD_ID'] = o_name + '_' + d_name
-            straight_df['COUNT'] = count
-            straight_df['geometry'] = line
-
-            # add to list
-            straight_edges.append(straight_df)
-
-        # concatenate list to dataframe
-        straights = pd.concat(straight_edges)
-
-        # add orig and dest ids
-        straights['orig_id'] = straights['OD_ID'].apply(
-            lambda x: x.split('_')[0])
-        straights['dest_id'] = straights['OD_ID'].apply(
-            lambda x: x.split('_')[1])
-
-        # create geodataframe of straight lines
-        straights = gpd.GeoDataFrame(
-            straights, crs='epsg:4326', geometry='geometry')
-
-        # get results
-        results = pd.concat([merged_lines_gdf, straights]
-                            ).reset_index(drop=True)
+        # combine bundled and unbundled geomteries
+        results = pd.concat([bezier_gdf, straight_gdf]).reset_index(drop=True)
 
         # save
         results.to_file(output, driver='GPKG')
-
-# Check if we have enough control points
 
 
 @jit(nopython=True)
