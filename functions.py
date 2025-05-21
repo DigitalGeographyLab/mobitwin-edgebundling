@@ -274,7 +274,7 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
 
     if use_3d:  # not supported
         print(
-            '[INFO] - 3D not supported, check original repo by xpeterk1 for '
+            '[INFO] - 3D not supported, check out the original repo by xpeterk1 for '
             '3D functionality!')
         print('[INFO] - Exiting...')
         exit
@@ -288,12 +288,13 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
         # keep track of the original edge for each bezier curve
         edge_bezier_map = {}
         
+        # loop over control points and start the curve drawing
         for i, controlPoints in enumerate(tqdm(control_points, desc="Drawing curves: ")):
             polygon = create_bezier_polygon(
                 controlPoints, n)  # returns list of 2d vectors
             bezier_polygons.append(polygon)
             
-            # Find end and start points for current edge
+            # find end and start points for current edge
             start_point = tuple(controlPoints[0])
             end_point = tuple(controlPoints[-1])
             
@@ -317,7 +318,7 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
         # create a list for the bezier lines with their metadata
         bezier_lines = []
 
-        # loop over bezier polys
+        # loop over bezier polygons
         for i, poly in enumerate(bezier_polygons):
             
             # get line string
@@ -333,7 +334,7 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
                 # append to bezier lines list if found
                 bezier_lines.append({
                     'geometry': linestring,
-                    'orig_id': source_node.name
+                    'orig_id': source_node.name,
                     'dest_id': dest_node.name,
                     'OD_ID': f"{source_node.name}_{dest_node.name}",
                     'COUNT': edge.count
@@ -368,7 +369,7 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
             d_name = d.name
 
             # get count of flow for edge connecting the nodes
-            count = edge.count
+            e_count = edge.count
 
             # generate geometry for the edge
             line = LineString([Point([o.longitude, o.latitude]),
@@ -377,21 +378,20 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
             # create straight line geometry row
             straight_lines.append({
                 'geometry': line,
-                'orig_id': o.name,
-                'dest_id': d.name,
-                'OD_ID': f"{o.name}_{d.name}",
-                'COUNT': edge.count
+                'orig_id': o_name,
+                'dest_id': d_name,
+                'OD_ID': f"{o_name}_{d_name}",
+                'COUNT': e_count
             })
             
         # create geodataframe for straight line geometries
         straight_gdf = gpd.GeoDataFrame(straight_lines, crs='epsg:4326')      
 
         # combine bundled and unbundled geomteries
-        results = pd.concat([bezier_gdf, straights]).reset_index(drop=True)
+        results = pd.concat([bezier_gdf, straight_gdf]).reset_index(drop=True)
 
         # save
         results.to_file(output, driver='GPKG')
-
 
 
 @jit(nopython=True)
