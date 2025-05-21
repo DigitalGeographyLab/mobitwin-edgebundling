@@ -282,7 +282,7 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
     # then do this
     else:
         
-        # create and bezier curves
+        # create list for bezier curves
         bezier_polygons = []
         
         # keep track of the original edge for each bezier curve
@@ -303,7 +303,7 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map, centroid_df,
                 
                 # get origin and destinations IDs
                 source = nodes[edge.source]
-                dest = nodes[edges.destination]
+                dest = nodes[edge.destination]
                 
                 # get origin and destination coordinates
                 source_point = (source.longitude, source.latitude)
