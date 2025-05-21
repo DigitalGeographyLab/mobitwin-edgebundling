@@ -3,13 +3,6 @@
 """
 Created on Fri Mar 28 15:27:50 2025
 
-This script expects you to use the output from bundle_edges.py file.
-If you use something else, please modify accordingly.
-
-### Run the script by typing:
-
-python animate_flows.py -ig /path/to/file.gpkg -ic /path/to/count.csv -o /path/to/output.gif
-
 @author: waeiski
 """
 
@@ -20,30 +13,10 @@ from matplotlib.animation import FuncAnimation
 import contextily as ctx
 import numpy as np
 from matplotlib.colors import Normalize
-import argparse
-
-# set up argument parser
-ap = argparse.ArgumentParser()
-
-# Get path to input geopackage
-ap.add_argument("-ig", "--input-geo", required=True,
-                help="Path to input GeoPackage")
-
-# Get path to input count data
-ap.add_argument("-ic", "--input-count", required=True,
-                help="Path to input CSV with flow counts")
-
-# Get path to output file
-ap.add_argument("-o", "--output", required=True,
-                help="Path to output .gif file")
-
-# parse arguments
-args = vars(ap.parse_args())
 
 # configure file paths
-GPKG_PATH = args['input-geo']     # Path to your GPKG file
-CSV_PATH = args['input-count']    # Path to your CSV file
-OUTPUT_GIF_PATH = args['output']  # Output GIF filename
+GPKG_PATH = "/path/to/geopackage.gpkg"   # Path to your GPKG file
+OUTPUT_GIF_PATH = "/path/to/output.gif"  # Output GIF filename
 
 # column names (adjust if different in your files) ---
 GPKG_ORIGIN_ID_COL = 'orig_id'
@@ -60,8 +33,8 @@ BASEMAP_SOURCE = ctx.providers.CartoDB.DarkMatter  # basemap style
 FLOW_COLORMAP = 'viridis'        # colormap for line intensity
 DOT_COLOR = 'lightcyan'          # color of the moving dots
 DOT_SIZE = 2                     # size of the moving dots
-MIN_LINEWIDTH = 0.7              # minimum linewidth for flows
-MAX_LINEWIDTH = 3.5              # maximum linewidth for flows
+MIN_LINEWIDTH = 0.5              # minimum linewidth for flows
+MAX_LINEWIDTH = 1.5              # maximum linewidth for flows
 MIN_ALPHA = 0.15                 # minimum alpha (transparency) for flows
 MAX_ALPHA = 0.9                  # maximum alpha for flows (scaled by count)
 GLOW_EFFECT_MULTIPLIER = 2.3     # for top 5%, draw slightly thicker base line
@@ -75,7 +48,9 @@ def create_flow_animation():
         gdf_lines = gdf_lines[[GPKG_ORIGIN_ID_COL,
                                GPKG_DEST_ID_COL,
                                'geometry']]
-        df_flows = pd.read_csv(CSV_PATH)
+        df_flows = gpd.read_file(GPKG_PATH)
+        df_flows = df_flows[[GPKG_ORIGIN_ID_COL, GPKG_DEST_ID_COL,
+                             CSV_COUNT_COL]]
     except Exception as e:
         print(f"Error loading input files: {e}")
         return
