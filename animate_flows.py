@@ -302,3 +302,7 @@ def create_flow_animation():
 
     # Close the plot figure to free memory
     plt.close(fig)
+
+
+# run the animation
+create_flow_animation()
